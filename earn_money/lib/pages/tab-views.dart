@@ -35,6 +35,25 @@ class _TabsViewState extends State<TabsView>
     super.initState();
   }
 
+  callGet() {
+    showDialog(
+        context: context,
+        builder: (BuildContext builder) {
+          return AlertDialog(
+            title: Text('Alert'),
+            content: Text('Will add new list to the list'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.pop(context, {true});
+                },
+              )
+            ],
+          );
+        }).then((response) => {});
+  }
+
   getSpinner() {
     if (loading) {
       return new Center(

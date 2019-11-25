@@ -1,5 +1,7 @@
 import 'package:earn_money/pages/side-drawer.dart';
+import 'package:earn_money/pages/tasks-list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   String user;
@@ -11,9 +13,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(vsync: this, length: _tabList.length);
+    super.initState();
+  }
+
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  List<Widget> _tabList = [
+    Container(
+        child: FlutterLogo(
+      size: 150,
+    )),
+    TasksList(),
+    Container(
+      color: Colors.purple,
+    )
+  ];
+
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
@@ -28,34 +50,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       style: optionStyle,
     ),
   ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _tabController.animateTo(_selectedIndex);
     });
-  }
-
-  callGet() {
-    showDialog(
-        context: context,
-        builder: (BuildContext builder) {
-          return AlertDialog(
-            title: Text('Alert'),
-            content: Text('Will add new list to the list'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () {
-                  Navigator.pop(context, {true});
-                },
-              )
-            ],
-          );
-        }).then((response) => {});
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.deepOrange, //or set color with: Color(0xFF0000FF)
+    ));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
@@ -66,8 +72,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ],
       ),
       drawer: SideMenu(),
-      body: Center(
-        child: Text("Welcome to me"),
+      body: TabBarView(
+        controller: _tabController,
+        children: _tabList,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
@@ -86,7 +93,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.deepOrange,
         onTap: _onItemTapped,
       ),
     );
