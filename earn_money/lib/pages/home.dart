@@ -1,9 +1,5 @@
-import 'dart:convert';
 import 'package:earn_money/pages/side-drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import 'dart:async';
 
 class Home extends StatefulWidget {
   String user;
@@ -15,56 +11,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  final titleController = TextEditingController();
-  final messageController = TextEditingController();
-  int userid = 1;
-  bool loading = false;
-  var usersInfo = [
-    {
-      "postId": 1,
-      "id": 1,
-      "name": "id labore ex et quam laborum",
-      "title": "Eliseo@gardner.biz",
-      "body":
-          "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
-    },
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Index 0: Home',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 1: Business',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 2: School',
+      style: optionStyle,
+    ),
   ];
-  List info = new List();
 
-  @override
-  void initState() {
-    _tabController = new TabController(length: 3, vsync: this);
-    super.initState();
-  }
-
-  getSpinner() {
-    if (loading) {
-      return new Center(
-        child: new CircularProgressIndicator(),
-      );
-    }
-  }
-
-  addInfo(title, message) {
+  void _onItemTapped(int index) {
     setState(() {
-      loading = true;
-    });
-    var url = 'https://jsonplaceholder.typicode.com/posts';
-    var infobody = json.encode({'title': title, 'body': message});
-    var test = http.post(url, body: infobody, headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }).then((response) {
-      print(response.body);
-      setState(() {
-        loading = false;
-      });
-      usersInfo.add(
-        json.decode(response.body),
-      );
-      print(usersInfo);
-    }).catchError((onError) {
-      print('some error occured');
+      _selectedIndex = index;
     });
   }
 
@@ -84,130 +51,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               )
             ],
           );
-        }).then((response) => {getData()});
-  }
-
-  addUpdateDialog(isUpdate, index) {
-    if (isUpdate) {
-      setState(() {
-        titleController.text = usersInfo[index]['title'];
-        messageController.text = usersInfo[index]['body'];
-      });
-    } else {
-      setState(() {
-        titleController.text = '';
-        messageController.text = '';
-      });
-    }
-
-    showDialog(
-        context: context,
-        builder: (BuildContext builder) {
-          return Dialog(
-            child: Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    AppBar(
-                      backgroundColor: Colors.deepOrange,
-                      title: Text(isUpdate ? 'Update' : 'Add post'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Title'),
-                          TextField(
-                            controller: titleController,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Please enter your titile'),
-                          ),
-                          SizedBox(height: 20),
-                          Text('Message'),
-                          TextField(
-                            controller: messageController,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Please enter your message'),
-                          ),
-                          SizedBox(height: 30),
-                          Center(
-                            child: RaisedButton(
-                              color: Colors.deepOrangeAccent,
-                              textColor: Colors.white,
-                              child: Text(isUpdate ? 'Update' : 'Add post'),
-                              onPressed: () {
-                                Navigator.pop(context, true);
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        }).then((onValue) {
-      if (onValue) {
-        if (isUpdate) {
-          setState(() {
-            usersInfo[index]['title'] = titleController.text;
-            usersInfo[index]['body'] = messageController.text;
-          });
-          updateInfo(index);
-        } else {
-          addInfo(titleController.text, messageController.text);
-        }
-      }
-    });
-  }
-
-//delete service call
-  removeElement(index) {
-    var url = 'https://jsonplaceholder.typicode.com/posts/' +
-        usersInfo[index]['id'].toString();
-    setState(() {
-      usersInfo.removeAt(index);
-    });
-    http
-        .delete(url, headers: {'Content-Type': 'application/json'})
-        .then((response) => {print('item removed')})
-        .catchError((onError) => {print(onError)});
-  }
-
-  getData() {
-    var url = 'https://jsonplaceholder.typicode.com/posts/' + userid.toString();
-    setState(() {
-      loading = true;
-    });
-    http
-        .get(url, headers: {'Content-Type': 'application/json'})
-        .then((response) => {
-              setState(() {
-                usersInfo.add(json.decode(response.body));
-                loading = false;
-                userid++;
-              })
-            })
-        .catchError((onError) {
-          print(onError);
-          setState(() {
-            loading = false;
-          });
-        });
-  }
-
-  updateInfo(index) {
-    var url = 'https://jsonplaceholder.typicode.com/posts/' +
-        usersInfo[index]['id'].toString();
-    var body = json.encode(usersInfo[index]);
-    http.put(url, body: body, headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }).then((response) => {print(response.body)});
+        }).then((response) => {});
   }
 
   @override
@@ -216,100 +60,34 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: Text("Earn Money"),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: <Widget>[
-            Tab(
-              icon: Icon(Icons.home),
-            ),
-            Tab(
-              icon: Icon(Icons.hotel),
-            ),
-            Tab(
-              icon: Icon(Icons.import_contacts),
-            ),
-          ],
-        ),
-        // leading: Icon(Icons.menu),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search), onPressed: () {}),
           IconButton(icon: Icon(Icons.info), onPressed: () {})
         ],
       ),
       drawer: SideMenu(),
-      body: TabBarView(controller: _tabController, children: <Widget>[
-        Tab(
-          child: Stack(
-            children: <Widget>[
-              loading
-                  ? getSpinner()
-                  : ListView.builder(
-                      itemBuilder: (context, index) {
-                        print(index);
-                        return Dismissible(
-                          background: Container(
-                            color: Colors.red,
-                          ),
-                          key: ObjectKey(usersInfo[index]['id']),
-                          child: ListTile(
-                              trailing: IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  setState(() {});
-                                  addUpdateDialog(true, index);
-                                },
-                              ),
-                              title: Text(usersInfo[index]['title']),
-                              subtitle: Text(usersInfo[index]['body'])),
-                          onDismissed: (direction) {
-                            removeElement(index);
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text("Item deleted"),
-                              backgroundColor: Colors.deepOrangeAccent,
-                              duration: Duration(milliseconds: 800),
-                            ));
-                          },
-                        );
-                      },
-                      itemCount: usersInfo.length,
-                    ),
-            ],
-          ),
-        ),
-        Tab(
-          child: Center(
-            child: Text('data'),
-          ),
-        ),
-        Tab(
-          child: Center(child: Text('text')),
-        ),
-      ]),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Colors.red,
-        onPressed: () {
-          addUpdateDialog(false, null);
-        },
+      body: Center(
+        child: Text("Welcome to me"),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add_to_queue),
-              onPressed: () {
-                callGet();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.mail_outline),
-              onPressed: () {},
-            ),
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business),
+            title: Text('Business'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            title: Text('School'),
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }

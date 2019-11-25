@@ -3,6 +3,18 @@ import 'package:flutter/material.dart';
 class SideMenu extends StatelessWidget {
   const SideMenu({Key key}) : super(key: key);
 
+  countInfo() {
+    return CircleAvatar(
+      backgroundColor: Colors.deepOrange,
+      radius: 10,
+      child: Text(
+        "2",
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,57 +44,62 @@ class SideMenu extends StatelessWidget {
               decoration: BoxDecoration(color: Colors.deepOrangeAccent),
             ),
             ListTile(
-                title: Text('Dashboard'),
-                trailing: Icon(Icons.dashboard, color: Colors.deepOrange),
+                leading: Icon(Icons.dashboard, color: Colors.deepOrange),
+                title: Text(
+                  'Dashboard',
+                ),
+                trailing: countInfo(),
                 onTap: () {}),
             ListTile(
-                title: Text('My Earning'),
-                trailing: Icon(
+                leading: Icon(
                   Icons.attach_money,
                   color: Colors.deepOrange,
                 ),
+                title: Text('My Earning'),
+                trailing: countInfo(),
                 onTap: () {}),
             ListTile(
-                title: Text('Pending Tasks'),
-                trailing: Icon(
+                leading: Icon(
                   Icons.work,
                   color: Colors.deepOrange,
                 ),
+                title: Text('Pending Tasks'),
+                trailing: countInfo(),
                 onTap: () {}),
             ListTile(
-              title: Text(
-                'Completed Tasks',
-              ),
-              trailing: Icon(
+              leading: Icon(
                 Icons.account_balance_wallet,
                 color: Colors.deepOrange,
               ),
+              title: Text(
+                'Completed Tasks',
+              ),
               onTap: () {},
             ),
             ListTile(
-              title: Text(
-                'Withdraw Money',
-              ),
-              trailing: Icon(
+              leading: Icon(
                 Icons.account_balance,
                 color: Colors.deepOrange,
               ),
+              title: Text(
+                'Withdraw Money',
+              ),
               onTap: () {},
             ),
             ListTile(
-              title: Text('Contact us'),
-              trailing: Icon(
+              leading: Icon(
                 Icons.email,
                 color: Colors.deepOrange,
               ),
+              title: Text('Contact us'),
               onTap: () {},
             ),
             ListTile(
-              title: Text('Logout'),
-              trailing: Icon(
+              leading: Icon(
                 Icons.remove_circle,
                 color: Colors.deepOrange,
               ),
+              title: Text('Logout'),
               onTap: () {
                 Navigator.pop(context, 'data');
               },
@@ -90,7 +107,6 @@ class SideMenu extends StatelessWidget {
           ],
         ),
       ),
-      ,
     );
   }
 }
