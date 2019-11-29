@@ -1,3 +1,4 @@
+import 'package:earn_money/pages/home.dart';
 import 'package:earn_money/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class EarnMoney extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:Login(),
+      home: Home("Lokes", "Lokeswara.betha@ggktech.com"),
     );
   }
 }
