@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:ffi';
+
 import 'package:earn_money/pages/home-header.dart';
 import 'package:earn_money/pages/side-drawer.dart';
 import 'package:earn_money/pages/tasks-list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 
 class Home extends StatefulWidget {
   String user;
@@ -15,11 +19,43 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   TabController _tabController;
-
+  Map<String, double> currentLocation = Map();
+  StreamSubscription<Map<String, double>> locationSubscription;
+  Location location = Location();
+  String error;
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 3);
     super.initState();
+    currentLocation['latitude'] = 0.0;
+    currentLocation['longitude'] = 0.0;
+    initPlatformState();
+
+    locationSubscription =
+        location.onLocationChanged().listen((Map<String, double> result) {
+      setState(() {
+        currentLocation = result;
+      });
+    });
+  }
+
+  initPlatformState() async {
+    Map<String, double> myLocation;
+    try {
+      myLocation = await location.getLocation();
+      error = "";
+    } on PlatformException catch (e) {
+      if (e.code == "PERMISSION_DENIED") {
+        error = "Permission Denied";
+      } else if (e.code == "PERMISSION_DENIED_NERVER_ASK") {
+        error =
+            "Permission Denied -- Please ask the user the enable the location from the settings";
+      }
+      currentLocation = null;
+    }
+    setState(() {
+      currentLocation = myLocation;
+    });
   }
 
   int _selectedIndex = 0;
@@ -253,7 +289,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 ),
                                 onPressed: () {},
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                 ),
                               ),
                               leading: Icon(Icons.audiotrack),
@@ -269,7 +305,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ),
           TasksList(),
           Container(
-            color: Colors.purple,
+            child: Center(
+              child: Text(
+                'Latitude : ${currentLocation['latitude']} / longitude : ${currentLocation['longitude']}',
+                style: TextStyle(fontSize: 24, color: Colors.green),
+              ),
+            ),
           )
         ],
       ),
