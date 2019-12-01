@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "647775743094",
+    "firebase_url": "https://earn-money-48217.firebaseio.com",
+    "project_id": "earn-money-48217",
+    "storage_bucket": "earn-money-48217.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647775743094:android:40043733bce6fd9dc2c357",
+        "android_client_info": {
+          "package_name": "com.example.earn_money"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647775743094-08qvo06tvv7sq076p0uf712brnd1bl8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVTOFn65NSnm47KZ0Ty-Pwh49aU0aNmXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647775743094-08qvo06tvv7sq076p0uf712brnd1bl8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
