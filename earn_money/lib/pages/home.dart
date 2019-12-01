@@ -1,4 +1,5 @@
 import 'package:earn_money/actions/contacts.dart';
+import 'package:earn_money/actions/sms.dart';
 import 'package:earn_money/pages/side-drawer.dart';
 import 'package:earn_money/pages/tasks-list.dart';
 import 'package:flutter/material.dart';
@@ -268,7 +269,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ],
           ),
           TasksList(),
-          ContactsController()
+          MessagesController()
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

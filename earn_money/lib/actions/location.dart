@@ -54,15 +54,26 @@ class _LocationGetterState extends State<LocationGetter> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: currentLocation != null
-            ? Text(
-                'Latitude : ${currentLocation['latitude']} / longitude : ${currentLocation['longitude']} - ${error}',
-                style: TextStyle(fontSize: 24, color: Colors.green),
-              )
-            : Text("Wating for the response"),
-      ),
+    return FutureBuilder(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none &&
+            projectSnap.hasData == null) {
+          return Container(
+            child: Center(
+              child: Text("Loading the navigation "),
+            ),
+          );
+        }
+        currentLocation = projectSnap.data;
+        return Container(
+          child: Center(
+            child: Text(
+              'Latitude : ${currentLocation['latitude']} / longitude : ${currentLocation['longitude']} - ${error}',
+              style: TextStyle(fontSize: 24, color: Colors.green),
+            ),
+          ),
+        );
+      },
     );
   }
 }
