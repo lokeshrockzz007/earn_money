@@ -1,6 +1,4 @@
-import 'package:camera/camera.dart';
-import 'package:earn_money/actions/TakePictureScreen.dart';
-import 'package:earn_money/actions/location.dart';
+import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/pages/side-drawer.dart';
 import 'package:earn_money/pages/tasks-list.dart';
 import 'package:flutter/material.dart';
@@ -270,7 +268,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ],
           ),
           TasksList(),
-          LocationGetter(),
+          ContactsController()
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
