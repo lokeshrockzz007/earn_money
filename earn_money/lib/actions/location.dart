@@ -21,7 +21,6 @@ class _LocationGetterState extends State<LocationGetter> {
     // TODO: implement initState
     currentLocation['latitude'] = 0.0;
     currentLocation['longitude'] = 0.0;
-    initPlatformState();
     locationSubscription =
         location.onLocationChanged().listen((Map<String, double> result) {
       setState(() {
@@ -41,20 +40,21 @@ class _LocationGetterState extends State<LocationGetter> {
       } else if (e.code == "PERMISSION_DENIED_NERVER_ASK") {
         error =
             "Permission Denied -- Please ask the user the enable the location from the settings";
-      } else {
-        error = "Failed to get the location";
       }
-      currentLocation['latitude'] = 0.0;
-      currentLocation['longitude'] = 0.0;
+      myLocation['latitude'] = 0.0;
+      myLocation['longitude'] = 0.0;
     }
     setState(() {
       currentLocation = myLocation;
     });
+
+    return myLocation;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
+      future: initPlatformState(),
       builder: (context, projectSnap) {
         if (projectSnap.connectionState == ConnectionState.none &&
             projectSnap.hasData == null) {
@@ -64,7 +64,8 @@ class _LocationGetterState extends State<LocationGetter> {
             ),
           );
         }
-        currentLocation = projectSnap.data;
+        currentLocation =
+            projectSnap.data != null ? projectSnap.data : currentLocation;
         return Container(
           child: Center(
             child: Text(

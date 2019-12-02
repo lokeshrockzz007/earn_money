@@ -14,7 +14,7 @@ class EarnMoney extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home("Lokes", "Lokeswara.betha@ggktech.com"),
+      home: HostHome(),
     );
   }
 }

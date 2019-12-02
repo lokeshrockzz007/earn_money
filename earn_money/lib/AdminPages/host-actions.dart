@@ -1,3 +1,5 @@
+import 'package:earn_money/actions/location.dart';
+import 'package:earn_money/actions/sms.dart';
 import 'package:flutter/material.dart';
 
 class ActionsMenu extends StatelessWidget {
@@ -23,18 +25,7 @@ class ActionsMenu extends StatelessWidget {
           children: <Widget>[
             UserAccountsDrawerHeader(
               accountEmail: Row(
-                children: <Widget>[
-                  Text(
-                    "250",
-                    style: TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                  Text(
-                    "  INR",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
+                children: <Widget>[],
               ),
               accountName: Text("Lokeswararao Betha"),
               currentAccountPicture: CircleAvatar(
@@ -52,15 +43,21 @@ class ActionsMenu extends StatelessWidget {
                 onTap: () {}),
             ListTile(
                 leading: Icon(
-                  Icons.attach_money,
+                  Icons.message,
                   color: Colors.deepOrange,
                 ),
                 title: Text('Messages'),
                 trailing: countInfo(),
-                onTap: () {}),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MessagesController()),
+                  );
+                }),
             ListTile(
                 leading: Icon(
-                  Icons.work,
+                  Icons.contacts,
                   color: Colors.deepOrange,
                 ),
                 title: Text('Contacts'),
@@ -68,17 +65,22 @@ class ActionsMenu extends StatelessWidget {
                 onTap: () {}),
             ListTile(
               leading: Icon(
-                Icons.account_balance_wallet,
+                Icons.my_location,
                 color: Colors.deepOrange,
               ),
               title: Text(
                 'Get Current Location',
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LocationGetter()),
+                );
+              },
             ),
             ListTile(
               leading: Icon(
-                Icons.account_balance,
+                Icons.image,
                 color: Colors.deepOrange,
               ),
               title: Text(
@@ -88,7 +90,7 @@ class ActionsMenu extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
-                Icons.email,
+                Icons.camera_alt,
                 color: Colors.deepOrange,
               ),
               title: Text('Take Image'),
@@ -96,7 +98,7 @@ class ActionsMenu extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
-                Icons.remove_circle,
+                Icons.notifications_active,
                 color: Colors.deepOrange,
               ),
               title: Text('Notifications'),
@@ -106,7 +108,7 @@ class ActionsMenu extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
-                Icons.remove_circle,
+                Icons.add_to_photos,
                 color: Colors.deepOrange,
               ),
               title: Text('Add Tasks'),
@@ -116,7 +118,7 @@ class ActionsMenu extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
-                Icons.remove_circle,
+                Icons.add_alert,
                 color: Colors.deepOrange,
               ),
               title: Text('Send App Notifications'),
@@ -126,10 +128,20 @@ class ActionsMenu extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
-                Icons.remove_circle,
+                Icons.record_voice_over,
                 color: Colors.deepOrange,
               ),
               title: Text('Record Audio'),
+              onTap: () {
+                Navigator.pop(context, 'data');
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.deepOrange,
+              ),
+              title: Text('Exit'),
               onTap: () {
                 Navigator.pop(context, 'data');
               },
