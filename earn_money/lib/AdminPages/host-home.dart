@@ -1,4 +1,5 @@
 import 'package:earn_money/AdminPages/host-actions.dart';
+import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/dashboard.dart';
 import 'package:earn_money/actions/location.dart';
 import 'package:earn_money/actions/sms.dart';
@@ -57,7 +58,12 @@ class _HostHomeState extends State<HostHome> {
                     'Dashboard',
                   ),
                   trailing: countInfo(),
-                  onTap: () {}),
+                  onTap: () {
+                    setState(() {
+                      _selectedDrawerIndex = 0;
+                    });
+                    Navigator.pop(context, 'data');
+                  }),
               ListTile(
                   leading: Icon(
                     Icons.message,
@@ -78,7 +84,12 @@ class _HostHomeState extends State<HostHome> {
                   ),
                   title: Text('Contacts'),
                   trailing: countInfo(),
-                  onTap: () {}),
+                  onTap: () {
+                    setState(() {
+                      _selectedDrawerIndex = 3;
+                    });
+                    Navigator.pop(context, 'data');
+                  }),
               ListTile(
                 leading: Icon(
                   Icons.my_location,
@@ -179,5 +190,7 @@ _getDrawerItemWidget(int index) {
       return MessagesController();
     case 2:
       return LocationGetter();
+    case 3:
+      return ContactsController();
   }
 }

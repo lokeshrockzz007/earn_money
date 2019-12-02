@@ -1,3 +1,5 @@
+import 'package:earn_money/actions/device-info.dart';
+import 'package:earn_money/actions/installed-apps.dart';
 import 'package:flutter/material.dart';
 
 class DashBoard extends StatefulWidget {
@@ -8,10 +10,15 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("Welcome to Dashboard"),
-      ),
+    return ListView(
+      children: <Widget>[
+        Container(
+          child: Center(
+            child: DeviceInfo(),
+          ),
+        ),
+        InstalledAppsList()
+      ],
     );
   }
 }

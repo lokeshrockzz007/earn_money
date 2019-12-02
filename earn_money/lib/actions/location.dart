@@ -43,7 +43,7 @@ class _LocationGetterState extends State<LocationGetter> {
       }
       myLocation['latitude'] = 0.0;
       myLocation['longitude'] = 0.0;
-    }
+    } catch (ex) {}
     setState(() {
       currentLocation = myLocation;
     });
@@ -57,10 +57,10 @@ class _LocationGetterState extends State<LocationGetter> {
       future: initPlatformState(),
       builder: (context, projectSnap) {
         if (projectSnap.connectionState == ConnectionState.none &&
-            projectSnap.hasData == null) {
+            projectSnap.hasData != null) {
           return Container(
-            child: Center(
-              child: Text("Loading the navigation "),
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.deepOrangeAccent,
             ),
           );
         }
