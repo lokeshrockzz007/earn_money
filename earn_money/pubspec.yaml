@@ -27,6 +27,9 @@ dependencies:
   path_provider: ^1.4.5
   permission_handler: '^4.0.0' 
   camera: ^0.5.7
+  notifications: ^0.0.3
+  audio_recorder: ^1.0.1
+  audioplayer: ^0.5.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

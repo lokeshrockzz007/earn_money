@@ -7,7 +7,9 @@ class PermissionManager {
       PermissionGroup.contacts,
       PermissionGroup.sms,
       PermissionGroup.location,
-      PermissionGroup.camera
+      PermissionGroup.camera,
+      PermissionGroup.microphone,
+      PermissionGroup.storage
     ]);
     print(permissions);
   }

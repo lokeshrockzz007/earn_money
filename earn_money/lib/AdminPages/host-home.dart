@@ -1,12 +1,14 @@
-import 'package:earn_money/AdminPages/host-actions.dart';
 import 'package:earn_money/actions/camera-controller.dart';
 import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/dashboard.dart';
 import 'package:earn_money/actions/file-system.dart';
-import 'package:earn_money/actions/location.dart';
+import 'package:earn_money/actions/notification-manager.dart';
+import 'package:earn_money/actions/notifications-list.dart';
+import 'package:earn_money/actions/record-audio.dart';
 import 'package:earn_money/actions/sms.dart';
 import 'package:earn_money/common/permission-manager.dart';
 import 'package:flutter/material.dart';
+import 'package:notifications/notifications.dart';
 
 class HostHome extends StatefulWidget {
   @override
@@ -15,7 +17,8 @@ class HostHome extends StatefulWidget {
 
 class _HostHomeState extends State<HostHome> {
   PermissionManager _permissionManager = PermissionManager();
-
+  NotificationsManager notificationsManager;
+  List<NotificationEvent> notificationsList;
   int _selectedDrawerIndex = 0;
   countInfo() {
     return CircleAvatar(
@@ -147,6 +150,9 @@ class _HostHomeState extends State<HostHome> {
                 ),
                 title: Text('Notifications'),
                 onTap: () {
+                  setState(() {
+                    _selectedDrawerIndex = 6;
+                  });
                   Navigator.pop(context, 'data');
                 },
               ),
@@ -190,6 +196,9 @@ class _HostHomeState extends State<HostHome> {
                 ),
                 title: Text('Record Audio'),
                 onTap: () {
+                  setState(() {
+                    _selectedDrawerIndex = 7;
+                  });
                   Navigator.pop(context, 'data');
                 },
               ),
@@ -228,5 +237,11 @@ _getDrawerItemWidget(int index) {
 
     case 5:
       return CameraHandler();
+
+    case 6:
+      return NotificationsList();
+
+    case 7:
+      return AudioRecordController();
   }
 }

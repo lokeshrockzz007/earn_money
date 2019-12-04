@@ -59,7 +59,7 @@ class _ContactsControllerState extends State<ContactsController> {
                     Icons.phone,
                     color: Colors.deepOrange,
                   ),
-                  title: Text(contacts.elementAt(index).displayName),
+                  title: Text(contacts.elementAt(index).givenName),
                   subtitle: Text(contacts.elementAt(index).phones.first.value),
                 ),
               );
