@@ -11,8 +11,6 @@ class DeviceInfo extends StatefulWidget {
 class _DeviceInfoState extends State<DeviceInfo> {
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
   }
 

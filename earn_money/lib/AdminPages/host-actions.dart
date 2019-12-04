@@ -1,4 +1,3 @@
-import 'package:earn_money/actions/location.dart';
 import 'package:earn_money/actions/sms.dart';
 import 'package:flutter/material.dart';
 
@@ -72,10 +71,10 @@ class ActionsMenu extends StatelessWidget {
                 'Get Current Location',
               ),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LocationGetter()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => LocationGetter()),
+                // );
               },
             ),
             ListTile(

@@ -1,4 +1,5 @@
 import 'package:earn_money/AdminPages/host-actions.dart';
+import 'package:earn_money/actions/camera-controller.dart';
 import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/dashboard.dart';
 import 'package:earn_money/actions/file-system.dart';
@@ -13,7 +14,7 @@ class HostHome extends StatefulWidget {
 }
 
 class _HostHomeState extends State<HostHome> {
-  PermissionManager _permissionManager;
+  PermissionManager _permissionManager = PermissionManager();
 
   int _selectedDrawerIndex = 0;
   countInfo() {
@@ -32,7 +33,7 @@ class _HostHomeState extends State<HostHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // _permissionManager.getPermissions();
+    _permissionManager.getPermissions();
   }
 
   @override
@@ -132,7 +133,12 @@ class _HostHomeState extends State<HostHome> {
                   color: Colors.deepOrange,
                 ),
                 title: Text('Take Image'),
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    _selectedDrawerIndex = 5;
+                  });
+                  Navigator.pop(context, 'data');
+                },
               ),
               ListTile(
                 leading: Icon(
@@ -213,11 +219,14 @@ _getDrawerItemWidget(int index) {
     case 1:
       return MessagesController();
     case 2:
-      return LocationGetter();
+    // return LocationGetter();
     case 3:
       return ContactsController();
 
     case 4:
       return FileSystem();
+
+    case 5:
+      return CameraHandler();
   }
 }

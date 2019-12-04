@@ -11,7 +11,6 @@ class _ContactsControllerState extends State<ContactsController> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

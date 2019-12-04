@@ -34,29 +34,39 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
                 decoration: BoxDecoration(
                     color: Colors.white70,
                     border: Border.all(color: Colors.deepOrangeAccent)),
-                height: 400.0,
+                height: 500.0,
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount: installedApps.length,
                   itemBuilder: (BuildContext ctxt, int index) {
                     return ListTile(
                       title: Text(installedApps[index]["app_name"]),
-                      trailing: IconButton(
-                          icon: const Icon(Icons.open_in_new),
-                          onPressed: () {
-                            Scaffold.of(context).hideCurrentSnackBar();
-                            AppAvailability.launchApp(
-                                    installedApps[index]["package_name"])
-                                .then((_) {
-                              print(
-                                  "App ${installedApps[index]["app_name"]} launched!");
-                            }).catchError((err) {
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      "App ${installedApps[index]["app_name"]} not found!")));
-                              print(err);
-                            });
-                          }),
+                      trailing: FlatButton(
+                        color: Colors.orangeAccent,
+                        child: Text(
+                          'Open',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          Scaffold.of(context).hideCurrentSnackBar();
+                          AppAvailability.launchApp(
+                                  installedApps[index]["package_name"])
+                              .then((_) {
+                            print(
+                                "App ${installedApps[index]["app_name"]} launched!");
+                          }).catchError((err) {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    "App ${installedApps[index]["app_name"]} not found!")));
+                            print(err);
+                          });
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
                     );
                   },
                 ),
