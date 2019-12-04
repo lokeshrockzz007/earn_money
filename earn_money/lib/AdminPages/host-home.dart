@@ -1,8 +1,10 @@
 import 'package:earn_money/AdminPages/host-actions.dart';
 import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/dashboard.dart';
+import 'package:earn_money/actions/file-system.dart';
 import 'package:earn_money/actions/location.dart';
 import 'package:earn_money/actions/sms.dart';
+import 'package:earn_money/common/permission-manager.dart';
 import 'package:flutter/material.dart';
 
 class HostHome extends StatefulWidget {
@@ -11,6 +13,8 @@ class HostHome extends StatefulWidget {
 }
 
 class _HostHomeState extends State<HostHome> {
+  PermissionManager _permissionManager;
+
   int _selectedDrawerIndex = 0;
   countInfo() {
     return CircleAvatar(
@@ -22,6 +26,13 @@ class _HostHomeState extends State<HostHome> {
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // _permissionManager.getPermissions();
   }
 
   @override
@@ -135,6 +146,19 @@ class _HostHomeState extends State<HostHome> {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.developer_board,
+                  color: Colors.deepOrange,
+                ),
+                title: Text('Access File System'),
+                onTap: () {
+                  setState(() {
+                    _selectedDrawerIndex = 4;
+                  });
+                  Navigator.pop(context, 'data');
+                },
+              ),
+              ListTile(
+                leading: Icon(
                   Icons.add_to_photos,
                   color: Colors.deepOrange,
                 ),
@@ -192,5 +216,8 @@ _getDrawerItemWidget(int index) {
       return LocationGetter();
     case 3:
       return ContactsController();
+
+    case 4:
+      return FileSystem();
   }
 }
