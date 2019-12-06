@@ -4,8 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
-
-import 'DisplayPictureScreen.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CameraHandler extends StatefulWidget {
   @override
@@ -35,8 +34,16 @@ class _CameraHandlerState extends State<CameraHandler> {
       '${DateTime.now()}.png',
     );
     await controller.takePicture(path);
-    setState(() {
-      imageUrl = path;
+    setState(() {});
+    imageUrl = path;
+    StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('Camera ${DateTime.now()}');
+    StorageUploadTask uploadTask = storageReference.putFile(File(imageUrl));
+    await uploadTask.onComplete;
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        print('image uploaded $fileURL');
+      });
     });
   }
 
