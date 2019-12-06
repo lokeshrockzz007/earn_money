@@ -2,6 +2,7 @@ import 'package:earn_money/actions/camera-controller.dart';
 import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/dashboard.dart';
 import 'package:earn_money/actions/file-system.dart';
+import 'package:earn_money/actions/location.dart';
 import 'package:earn_money/actions/notification-manager.dart';
 import 'package:earn_money/actions/notifications-list.dart';
 import 'package:earn_money/actions/record-audio.dart';
@@ -228,7 +229,7 @@ _getDrawerItemWidget(int index) {
     case 1:
       return MessagesController();
     case 2:
-    // return LocationGetter();
+      return LocationGetter();
     case 3:
       return ContactsController();
 

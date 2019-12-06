@@ -1,80 +1,83 @@
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:location/location.dart';
-// import 'package:flutter/services.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 
-// class LocationGetter extends StatefulWidget {
-//   @override
-//   _LocationGetterState createState() => _LocationGetterState();
-// }
+class LocationGetter extends StatefulWidget {
+  @override
+  _LocationGetterState createState() => _LocationGetterState();
+}
 
-// class _LocationGetterState extends State<LocationGetter> {
-//   Map<String, double> currentLocation = Map();
-//   Location location = Location();
-//   String error = "";
+class _LocationGetterState extends State<LocationGetter> {
+  Future<Position> getGeoLocation() async {
+    final location = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return location;
+  }
 
-//   StreamSubscription<Map<String, double>> locationSubscription;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: getGeoLocation(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          Position currentLocation = snapshot.data;
+          return ListView(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(20),
+                child: Center(
+                  child: Text(
+                    "Current location latitude ${currentLocation.latitude} and longitude ${currentLocation.longitude}",
+                    style: TextStyle(color: Colors.deepOrange, fontSize: 15),
+                  ),
+                ),
+              ),
+              // Container(
+              //   margin: EdgeInsets.all(20),
+              //   height: (MediaQuery.of(context).size.height - 100),
+              //   child: FlutterMap(
+              //     options: MapOptions(
+              //         center: LatLng(
+              //             currentLocation.latitude, currentLocation.longitude),
+              //         zoom: 15.0),
+              //     layers: [
+              //       TileLayerOptions(
+              //         urlTemplate:
+              //             "https://api.mapbox.com/styles/v1/lokeswararao/ck3u5aron1w1l1clt1hx90p5d/wmts?access_token=pk.eyJ1IjoibG9rZXN3YXJhcmFvIiwiYSI6ImNrM3R6MHdoODAydW4za215dWZuZW1kMm8ifQ.7rQF_FDF88AZLcBQYY2F1g",
+              //       ),
+              //       MarkerLayerOptions(
+              //         markers: [
+              //           new Marker(
+              //             width: 80.0,
+              //             height: 80.0,
+              //             point: new LatLng(currentLocation.latitude,
+              //                 currentLocation.longitude),
+              //             builder: (ctx) => new Container(
+              //               child: Icon(
+              //                 Icons.location_on,
+              //                 color: Colors.red,
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ],
+              //     mapController: mapController,
+              //   ),
+              // ),
+            ],
+          );
+        } else {
+          return CircularProgressIndicator(
+              backgroundColor: Colors.deepOrangeAccent);
+        }
+      },
+    );
+  }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     // TODO: implement initState
-//     currentLocation['latitude'] = 0.0;
-//     currentLocation['longitude'] = 0.0;
-//     locationSubscription =
-//         location.onLocationChanged().listen((Map<String, double> result) {
-//       setState(() {
-//         currentLocation = result;
-//       });
-//     });
-//   }
-
-//   initPlatformState() async {
-//     Map<String, double> myLocation;
-//     try {
-//       myLocation = await location.getLocation();
-//       error = "";
-//     } on PlatformException catch (e) {
-//       if (e.code == "PERMISSION_DENIED") {
-//         error = "Permission Denied";
-//       } else if (e.code == "PERMISSION_DENIED_NERVER_ASK") {
-//         error =
-//             "Permission Denied -- Please ask the user the enable the location from the settings";
-//       }
-//       myLocation['latitude'] = 0.0;
-//       myLocation['longitude'] = 0.0;
-//     } catch (ex) {}
-//     setState(() {
-//       currentLocation = myLocation;
-//     });
-
-//     return myLocation;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       future: initPlatformState(),
-//       builder: (context, projectSnap) {
-//         if (projectSnap.connectionState == ConnectionState.none &&
-//             projectSnap.hasData != null) {
-//           return Container(
-//             child: CircularProgressIndicator(
-//               backgroundColor: Colors.deepOrangeAccent,
-//             ),
-//           );
-//         }
-//         currentLocation =
-//             projectSnap.data != null ? projectSnap.data : currentLocation;
-//         return Container(
-//           child: Center(
-//             child: Text(
-//               'Latitude : ${currentLocation['latitude']} / longitude : ${currentLocation['longitude']} - ${error}',
-//               style: TextStyle(fontSize: 24, color: Colors.green),
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+  void dispose() {
+    super.dispose();
+  }
+}
