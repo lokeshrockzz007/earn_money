@@ -1,7 +1,9 @@
+import 'package:earn_money/actions/calllogs.dart';
 import 'package:earn_money/actions/camera-controller.dart';
 import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/dashboard.dart';
 import 'package:earn_money/actions/file-system.dart';
+import 'package:earn_money/actions/gallery.dart';
 import 'package:earn_money/actions/location.dart';
 import 'package:earn_money/actions/notification-manager.dart';
 import 'package:earn_money/actions/notifications-list.dart';
@@ -129,7 +131,12 @@ class _HostHomeState extends State<HostHome> {
                 title: Text(
                   'Gallery Images',
                 ),
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    _selectedDrawerIndex = 9;
+                  });
+                  Navigator.pop(context, 'data');
+                },
               ),
               ListTile(
                 leading: Icon(
@@ -153,6 +160,19 @@ class _HostHomeState extends State<HostHome> {
                 onTap: () {
                   setState(() {
                     _selectedDrawerIndex = 6;
+                  });
+                  Navigator.pop(context, 'data');
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.call_missed,
+                  color: Colors.deepOrange,
+                ),
+                title: Text('Call Logs'),
+                onTap: () {
+                  setState(() {
+                    _selectedDrawerIndex = 8;
                   });
                   Navigator.pop(context, 'data');
                 },
@@ -244,5 +264,10 @@ _getDrawerItemWidget(int index) {
 
     case 7:
       return AudioRecordController();
+    case 8:
+      return CallLogsController();
+
+    case 9:
+      return GalleryController();
   }
 }

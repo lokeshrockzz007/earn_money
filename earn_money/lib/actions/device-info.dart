@@ -32,6 +32,9 @@ class _DeviceInfoState extends State<DeviceInfo> {
                 backgroundColor: Colors.deepOrangeAccent,
               ),
             );
+          } else {
+            AndroidDeviceInfo deviceInfo =
+                projectSnap.data != null ? projectSnap.data : null;
           }
           AndroidDeviceInfo deviceInfo =
               projectSnap.data != null ? projectSnap.data : null;
@@ -62,7 +65,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
                             margin: EdgeInsets.symmetric(vertical: 5),
                           ),
                           Text(
-                            "Device Brand  - ${deviceInfo.product}",
+                            "Device Brand  - ${deviceInfo.brand}",
                             style: TextStyle(fontSize: 14),
                           ),
                           Container(height: 15),

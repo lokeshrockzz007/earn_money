@@ -107,6 +107,16 @@ class ActionsMenu extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
+                Icons.call_missed_outgoing,
+                color: Colors.deepOrange,
+              ),
+              title: Text('Call Logs'),
+              onTap: () {
+                Navigator.pop(context, 'data');
+              },
+            ),
+            ListTile(
+              leading: Icon(
                 Icons.add_to_photos,
                 color: Colors.deepOrange,
               ),
