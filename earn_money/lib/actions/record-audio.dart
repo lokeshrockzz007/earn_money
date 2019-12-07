@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:audioplayer/audioplayer.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_recorder/audio_recorder.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,6 +17,20 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
   Recording recording;
   AudioPlayer audioPlugin = new AudioPlayer();
   PlayerState playerState = PlayerState.Stopped;
+
+  uploadAudioToFirebase() async {
+    StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('Audios/${DateTime.now()}');
+    StorageUploadTask uploadTask =
+        storageReference.putFile(File(recording.path));
+    await uploadTask.onComplete;
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        print('audio uploaded $fileURL');
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,6 +65,7 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
                 setState(() {
                   recording = output;
                 });
+                uploadAudioToFirebase();
               },
             ),
           ],

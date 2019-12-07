@@ -34,10 +34,15 @@ class _CameraHandlerState extends State<CameraHandler> {
       '${DateTime.now()}.png',
     );
     await controller.takePicture(path);
-    setState(() {});
-    imageUrl = path;
+    setState(() {
+      imageUrl = path;
+    });
+    uploadImageToFirebase();
+  }
+
+  uploadImageToFirebase() async {
     StorageReference storageReference =
-        FirebaseStorage.instance.ref().child('Camera ${DateTime.now()}');
+        FirebaseStorage.instance.ref().child('Camera/${DateTime.now()}');
     StorageUploadTask uploadTask = storageReference.putFile(File(imageUrl));
     await uploadTask.onComplete;
     storageReference.getDownloadURL().then((fileURL) {
