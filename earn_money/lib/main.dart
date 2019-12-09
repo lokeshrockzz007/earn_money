@@ -1,8 +1,5 @@
-import 'package:earn_money/pages/home.dart';
-import 'package:earn_money/pages/login.dart';
+import 'package:earn_money/pages/login-page.dart';
 import 'package:flutter/material.dart';
-
-import 'AdminPages/host-home.dart';
 
 void main() => runApp(EarnMoney());
 
@@ -12,9 +9,22 @@ class EarnMoney extends StatelessWidget {
     return MaterialApp(
       title: 'Earn Money',
       theme: ThemeData(
+        cursorColor: Colors.deepOrange,
+        inputDecorationTheme: InputDecorationTheme(
+          focusColor: Colors.deepOrange,
+          fillColor: Colors.deepOrange,
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.orangeAccent, width: 2.0)),
+          focusedBorder: UnderlineInputBorder(
+              borderSide:
+                  BorderSide(color: Colors.deepOrangeAccent, width: 2.0)),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.deepOrange),
+          ),
+        ),
         primarySwatch: Colors.blue,
       ),
-      home: HostHome(),
+      home: LoginPage(),
     );
   }
 }

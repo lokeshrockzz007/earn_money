@@ -1,4 +1,5 @@
 import 'package:earn_money/common/dialogs.dart';
+import 'package:earn_money/firebase/senders.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 
@@ -139,6 +140,7 @@ class _MessagesControllerState extends State<MessagesController> {
   }
 
   getAllMessages() async {
-    return await query.getAllSms;
+    Senders send = Senders();
+    return send.getAllMessages();
   }
 }

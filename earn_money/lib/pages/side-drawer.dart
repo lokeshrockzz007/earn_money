@@ -1,3 +1,5 @@
+import 'package:earn_money/main.dart';
+import 'package:earn_money/pages/login-page.dart';
 import 'package:flutter/material.dart';
 
 class SideMenu extends StatelessWidget {
@@ -101,7 +103,8 @@ class SideMenu extends StatelessWidget {
               ),
               title: Text('Logout'),
               onTap: () {
-                Navigator.pop(context, 'data');
+                MaterialPageRoute(
+                    builder: (BuildContext context) => EarnMoney());
               },
             ),
           ],
