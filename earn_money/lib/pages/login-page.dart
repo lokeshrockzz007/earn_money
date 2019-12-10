@@ -1,3 +1,4 @@
+import 'package:earn_money/AdminPages/host-home.dart';
 import 'package:earn_money/modals/CustomIcons.dart';
 import 'package:earn_money/widgets/loginCard.dart';
 import 'package:earn_money/widgets/registerCard.dart';
@@ -146,9 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (BuildContext context) => Home(
-                                            "Lokesh",
-                                            "Lokeswara.betha@ggktech.com")));
+                                        builder: (BuildContext context) =>
+                                            HostHome()));
                               },
                               child: Center(
                                 child: Text(_isLogin ? "SIGNIN" : "SIGNUP",

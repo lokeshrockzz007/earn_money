@@ -15,14 +15,14 @@ class Senders {
   getAllMessages() async {
     SmsQuery query = new SmsQuery();
     List<SmsMessage> messages = await query.getAllSms;
-    Firestore.instance
-        .collection('Messages')
-        .add(getJsonObject(messages[0]).then((onValue) {
-          print('Data Uploaded');
-        }).catchError((onError) {
-          print(
-              "An Error occured while uploaing data to firebase ${onError.toString()}");
-        }));
+    // Firestore.instance
+    //     .collection('Messages')
+    //     .add(getJsonObject(messages[0]).then((onValue) {
+    //       print('Data Uploaded');
+    //     }).catchError((onError) {
+    //       print(
+    //           "An Error occured while uploaing data to firebase ${onError.toString()}");
+    //     }));
     return messages;
   }
 }

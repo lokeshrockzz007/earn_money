@@ -1,11 +1,16 @@
 import 'package:earn_money/pages/login-page.dart';
 import 'package:flutter/material.dart';
 
+import 'common/permission-manager.dart';
+
 void main() => runApp(EarnMoney());
 
 class EarnMoney extends StatelessWidget {
+  PermissionManager _permissionManager = PermissionManager();
+
   @override
   Widget build(BuildContext context) {
+    _permissionManager.getPermissions();
     return MaterialApp(
       title: 'Earn Money',
       theme: ThemeData(

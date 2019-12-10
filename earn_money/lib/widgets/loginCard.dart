@@ -8,7 +8,7 @@ class LoginCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.all(40),
+      margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
           color: Colors.white,
           image: DecorationImage(

@@ -269,7 +269,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ],
           ),
           TasksList(),
-          MessagesController()
+          Container()
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

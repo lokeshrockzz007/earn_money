@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/enums/user-actions.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CameraHandler extends StatefulWidget {
   @override
@@ -15,9 +18,24 @@ class _CameraHandlerState extends State<CameraHandler> {
   CameraController controller;
   AsyncSnapshot cameraSnapshot;
   String imageUrl;
+  Firestore db = Firestore.instance;
+  bool isActionSent = false;
+  String networkImageUrl;
+
   @override
   void initState() {
     super.initState();
+    initilizeActionsListiner();
+  }
+
+  initilizeActionsListiner() {
+    db.collection('camera').snapshots().listen((onData) {
+      if (isActionSent) {
+        setState(() {
+          networkImageUrl = onData.documents[0]['imageUrl'];
+        });
+      }
+    });
   }
 
   @override
@@ -34,9 +52,6 @@ class _CameraHandlerState extends State<CameraHandler> {
       '${DateTime.now()}.png',
     );
     await controller.takePicture(path);
-    setState(() {
-      imageUrl = path;
-    });
     uploadImageToFirebase();
   }
 
@@ -65,6 +80,26 @@ class _CameraHandlerState extends State<CameraHandler> {
     });
   }
 
+  sendActionCommand() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var action = {
+      "user_id": prefs.get('user_id'),
+      "action": UserActions.GetFrontImage.index,
+      "requested_date": DateTime.now()
+    };
+
+    try {
+      await Firestore.instance.collection('actions').add(action);
+      final snackbar =
+          SnackBar(content: Text('Action sent to get the front image'));
+      Scaffold.of(context).showSnackBar(snackbar);
+      isActionSent = true;
+    } catch (e) {
+      final snackbar = SnackBar(content: Text('Unable to send the action'));
+      Scaffold.of(context).showSnackBar(snackbar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -81,7 +116,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                setCameraController(true);
+                sendActionCommand();
               },
             ),
             FlatButton(
@@ -111,8 +146,8 @@ class _CameraHandlerState extends State<CameraHandler> {
           decoration:
               BoxDecoration(border: Border.all(color: Colors.deepOrangeAccent)),
           alignment: Alignment.center,
-          child: imageUrl != null
-              ? Image.file(File(imageUrl))
+          child: networkImageUrl != null
+              ? Image.network(networkImageUrl)
               : Center(
                   child: Text('Image will be displayed here'),
                 ),
