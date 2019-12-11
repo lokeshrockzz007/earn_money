@@ -29,10 +29,16 @@ class _CameraHandlerState extends State<CameraHandler> {
   }
 
   initilizeActionsListiner() {
-    db.collection('camera').snapshots().listen((onData) {
+    db
+        .collection('camera')
+        .orderBy("imageName", descending: true)
+        .limit(1)
+        .snapshots()
+        .listen((onData) {
       if (isActionSent) {
         setState(() {
           networkImageUrl = onData.documents[0]['imageUrl'];
+          isActionSent = false;
         });
       }
     });
@@ -80,11 +86,11 @@ class _CameraHandlerState extends State<CameraHandler> {
     });
   }
 
-  sendActionCommand() async {
+  sendActionCommand(actionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var action = {
       "user_id": prefs.get('user_id'),
-      "action": UserActions.GetFrontImage.index,
+      "action": actionId,
       "requested_date": DateTime.now()
     };
 
@@ -116,7 +122,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                sendActionCommand();
+                sendActionCommand(UserActions.GetFrontImage);
               },
             ),
             FlatButton(
@@ -124,7 +130,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                setCameraController(false);
+                sendActionCommand(UserActions.GetRareImage);
               },
             ),
           ],

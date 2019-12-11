@@ -1,5 +1,6 @@
 import 'package:earn_money/actions/contacts.dart';
 import 'package:earn_money/actions/sms.dart';
+import 'package:earn_money/common/permission-manager.dart';
 import 'package:earn_money/pages/side-drawer.dart';
 import 'package:earn_money/pages/tasks-list.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  PermissionManager _permissionManager = PermissionManager();
   String error;
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 3);
+    _permissionManager.initiaiteSharedPreferences();
+    _permissionManager.initilizeGlobalListiner();
     super.initState();
   }
 

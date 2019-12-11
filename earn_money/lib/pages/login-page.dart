@@ -1,5 +1,6 @@
 import 'package:earn_money/AdminPages/host-home.dart';
 import 'package:earn_money/modals/CustomIcons.dart';
+import 'package:earn_money/pages/login.dart';
 import 'package:earn_money/widgets/loginCard.dart';
 import 'package:earn_money/widgets/registerCard.dart';
 import 'package:earn_money/widgets/socialIcons.dart';
@@ -148,7 +149,10 @@ class _LoginPageState extends State<LoginPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            HostHome()));
+                                            _isLogin
+                                                ? HostHome()
+                                                : Home("Username",
+                                                    "Username@gmail.com")));
                               },
                               child: Center(
                                 child: Text(_isLogin ? "SIGNIN" : "SIGNUP",

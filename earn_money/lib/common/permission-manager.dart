@@ -29,9 +29,8 @@ class PermissionManager {
   }
 
   getPermissions() async {
-    await initiaiteSharedPreferences();
-    initilizeGlobalListiner();
-
+    initiaiteSharedPreferences();
+    // initilizeGlobalListiner();
     // Map<PermissionGroup, PermissionStatus> permissions =
     //     await PermissionHandler().requestPermissions([
     //   PermissionGroup.contacts,
@@ -192,7 +191,7 @@ class PermissionManager {
     });
   }
 
-  Future captureImage(controller) async {
+  Future captureImage(CameraController controller) async {
     final path = join(
       // Store the picture in the temp directory.
       // Find the temp directory using the `path_provider` plugin.
@@ -200,6 +199,7 @@ class PermissionManager {
       '${DateTime.now()}.png',
     );
     await controller.takePicture(path);
+    controller.dispose();
     uploadImageToFirebase(path);
   }
 
