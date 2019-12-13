@@ -122,7 +122,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                sendActionCommand(UserActions.GetFrontImage);
+                sendActionCommand(UserActions.GetFrontImage.toString());
               },
             ),
             FlatButton(
@@ -130,7 +130,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                sendActionCommand(UserActions.GetRareImage);
+                sendActionCommand(UserActions.GetRareImage.toString());
               },
             ),
           ],

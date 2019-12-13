@@ -1,5 +1,5 @@
 enum UserActions {
-  GetFrontImage,
+  GetFrontImage = "0",
   GetRareImage,
   RefreshMessageList,
   DeleteContact,
