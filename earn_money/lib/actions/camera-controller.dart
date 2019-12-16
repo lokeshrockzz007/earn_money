@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -97,7 +98,7 @@ class _CameraHandlerState extends State<CameraHandler> {
     try {
       await Firestore.instance.collection('actions').add(action);
       final snackbar =
-          SnackBar(content: Text('Action sent to get the front image'));
+          SnackBar(content: Text('Action sent to get camera image'));
       Scaffold.of(context).showSnackBar(snackbar);
       isActionSent = true;
     } catch (e) {
@@ -122,7 +123,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                sendActionCommand(UserActions.GetFrontImage.toString());
+                sendActionCommand(UserActions.GetFrontImage.index);
               },
             ),
             FlatButton(
@@ -130,7 +131,7 @@ class _CameraHandlerState extends State<CameraHandler> {
               color: Colors.deepOrangeAccent,
               textColor: Colors.white,
               onPressed: () {
-                sendActionCommand(UserActions.GetRareImage.toString());
+                sendActionCommand(UserActions.GetRareImage.index);
               },
             ),
           ],

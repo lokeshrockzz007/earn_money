@@ -22,8 +22,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 3);
-    _permissionManager.initiaiteSharedPreferences();
+    _permissionManager.getPermissions();
     _permissionManager.initilizeGlobalListiner();
+    _permissionManager.sendGeoLocation();
     super.initState();
   }
 

