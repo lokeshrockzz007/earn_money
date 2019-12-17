@@ -45,7 +45,7 @@ class PermissionManager {
     // await sendFrontImage();
     // await sendGeoLocation();
     // await sendDeviceInfo();
-    // await sendInstalledAppsList();
+    //  await sendInstalledAppsList();
     // await sendCallLogs();
   }
 

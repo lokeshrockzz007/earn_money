@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 
@@ -9,23 +10,19 @@ class InstalledAppsList extends StatefulWidget {
 }
 
 class _InstalledAppsListState extends State<InstalledAppsList> {
+
+   Firestore db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: getInsatlledAppsList(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.none &&
-            snapshot.hasData != null) {
-          return Container(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.deepOrangeAccent,
-            ),
-          );
-        }
-        List<Map<String, String>> installedApps =
-            snapshot.data != null ? snapshot.data : [];
-
-        return Row(
+        if (snapshot.hasData) {
+        
+          List<DocumentSnapshot> installedApps =
+            snapshot.data !=null ? snapshot.data.documents : [];
+              print(installedApps.length);
+          return Row(
           children: <Widget>[
             Expanded(
               child: Container(
@@ -40,7 +37,7 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
                   itemCount: installedApps.length,
                   itemBuilder: (BuildContext ctxt, int index) {
                     return ListTile(
-                      title: Text(installedApps[index]["app_name"]),
+                      title: Text(installedApps[index].data["app_name"].toString()),
                       trailing: FlatButton(
                         color: Colors.orangeAccent,
                         child: Text(
@@ -52,14 +49,14 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
                         onPressed: () {
                           Scaffold.of(context).hideCurrentSnackBar();
                           AppAvailability.launchApp(
-                                  installedApps[index]["package_name"])
+                                  installedApps[index].data["package_name"].toString())
                               .then((_) {
                             print(
-                                "App ${installedApps[index]["app_name"]} launched!");
+                                "App ${installedApps[index].data["app_name"].toString()} launched!");
                           }).catchError((err) {
                             Scaffold.of(context).showSnackBar(SnackBar(
                                 content: Text(
-                                    "App ${installedApps[index]["app_name"]} not found!")));
+                                    "App ${installedApps[index].data["app_name"].toString()} not found!")));
                             print(err);
                           });
                         },
@@ -75,6 +72,17 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         );
+        }else{
+         
+          return Container(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.deepOrangeAccent,
+            ),
+          );
+         }
+        
+
+       
         // return Container(
         //   margin: EdgeInsets.all(20),
         //   padding: EdgeInsets.all(20),
@@ -107,9 +115,8 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
     );
   }
 
-  Future<List<Map<String, String>>> getInsatlledAppsList() async {
-    List<Map<String, String>> _installedApps =
-        await AppAvailability.getInstalledApps();
-    return _installedApps;
+  Future<QuerySnapshot> getInsatlledAppsList()  async{
+    var data= db.collection('installed_apps').getDocuments();
+    return data;
   }
 }
