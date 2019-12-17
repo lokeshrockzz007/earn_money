@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:call_log/call_log.dart';
 
 class CallLogsController extends StatefulWidget {
+  
   CallLogsController({Key key}) : super(key: key);
 
   @override
@@ -9,9 +11,9 @@ class CallLogsController extends StatefulWidget {
 }
 
 class _CallLogsControllerState extends State<CallLogsController> {
-  getLogs() async {
-    var result = await CallLog.get();
-    return result;
+   Firestore db = Firestore.instance;
+  Future<QuerySnapshot> getLogs() async {
+      return db.collection('call_logs').getDocuments();
   }
 
   @override
@@ -21,18 +23,18 @@ class _CallLogsControllerState extends State<CallLogsController> {
         future: getLogs(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            Iterable<CallLogEntry> callLogs =
-                snapshot.data != null ? snapshot.data : [];
-            if (callLogs.length > 1) {
+             List<DocumentSnapshot> callLogs =
+            snapshot.data !=null ? snapshot.data.documents : [];
+            if (callLogs.length > 0) {
               return ListView.builder(
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(callLogs.elementAt(index).name),
-                      subtitle: Text(callLogs.elementAt(index).number),
+                      title: Text(callLogs[index].data['name'].toString()),
+                      subtitle: Text(callLogs[index].data['number'].toString()),
                       onTap: () {},
                       leading: Icon(Icons.phone),
                       trailing:
-                          Text(callLogs.elementAt(index).duration.toString()),
+                          Text(callLogs[index].data['duration'].toString()),
                     );
                   },
                   itemCount: callLogs.length);

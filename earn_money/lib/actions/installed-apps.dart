@@ -118,7 +118,6 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
   }
 
   Future<QuerySnapshot> getInsatlledAppsList()  async{
-    var data= db.collection('installed_apps').getDocuments();
-    return data;
+    return db.collection('installed_apps').getDocuments();
   }
 }

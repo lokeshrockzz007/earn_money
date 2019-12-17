@@ -7,4 +7,6 @@ enum UserActions {
   GetCurrentLocation,
   RefreshGallery,
   RefreshCalllogs,
+  StartRecording,
+  StopRecording
 }
