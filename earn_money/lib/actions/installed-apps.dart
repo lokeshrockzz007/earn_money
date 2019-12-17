@@ -75,8 +75,10 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
         }else{
          
           return Container(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.deepOrangeAccent,
+            child: Center(
+                          child: CircularProgressIndicator(
+                backgroundColor: Colors.deepOrangeAccent,
+              ),
             ),
           );
          }
