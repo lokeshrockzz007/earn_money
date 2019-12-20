@@ -3,8 +3,9 @@ import 'package:earn_money/pages/login-page.dart';
 import 'package:flutter/material.dart';
 
 class SideMenu extends StatelessWidget {
-  const SideMenu({Key key}) : super(key: key);
-
+  String username;
+  String password;
+  SideMenu(this.username, this.password) : super();
   countInfo() {
     return CircleAvatar(
       backgroundColor: Colors.deepOrange,
@@ -38,10 +39,16 @@ class SideMenu extends StatelessWidget {
                   ),
                 ],
               ),
-              accountName: Text("Lokeswararao Betha"),
+              accountName: Text(this.username),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white54,
-                child: Text('L'),
+                child: Text(
+                  this.username.substring(0, 1).toUpperCase(),
+                  style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
               ),
               decoration: BoxDecoration(color: Colors.deepOrangeAccent),
             ),

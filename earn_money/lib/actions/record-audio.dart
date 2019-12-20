@@ -62,7 +62,7 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
 
   bool isActionSent;
 
-  String networkImageUrl;
+  String networkAudioUrl;
 
   initilizeActionsListiner() {
     db
@@ -72,8 +72,9 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
         .snapshots()
         .listen((onData) {
       if (isActionSent) {
-        networkImageUrl = onData.documents[0]['audio_url'];
-        print(networkImageUrl);
+        setState(() {
+          networkAudioUrl = onData.documents[0]['audio_url'];
+        });
         isActionSent = false;
       }
     });
@@ -167,13 +168,12 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
           decoration:
               BoxDecoration(border: Border.all(color: Colors.deepOrangeAccent)),
           alignment: Alignment.topRight,
-          child: recording != null
+          child: networkAudioUrl != null
               ? Center(
                   child: Column(
                     children: <Widget>[
                       Expanded(
-                        child: Text(
-                            "Format : ${recording.audioOutputFormat},  Duration : ${recording.duration},  Extension : ${recording.extension},"),
+                        child: Text(networkAudioUrl),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -195,7 +195,7 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
                                     () => playerState = PlayerState.Paused);
                               } else {
                                 AudioProvider audioProvider =
-                                    AudioProvider(networkImageUrl);
+                                    AudioProvider(networkAudioUrl);
                                 String localUrl = await audioProvider.load();
                                 audioPlayer.play(localUrl, isLocal: true);
                                 setState(

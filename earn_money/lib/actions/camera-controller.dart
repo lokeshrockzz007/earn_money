@@ -90,7 +90,7 @@ class _CameraHandlerState extends State<CameraHandler> {
   sendActionCommand(actionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var action = {
-      "user_id": prefs.get('user_id'),
+      "user_id": prefs.getString('user_id'),
       "action": actionId,
       "requested_date": DateTime.now()
     };

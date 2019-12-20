@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginCard extends StatelessWidget {
   final primaryColors = [Colors.orangeAccent, Colors.deepOrangeAccent];
+
+  SharedPreferences sharedPreference;
+  initilizeSharedPreference() async {
+    sharedPreference = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +54,9 @@ class LoginCard extends StatelessWidget {
                     fontFamily: "Poppins-Medium",
                     fontSize: ScreenUtil.getInstance().setSp(22))),
             TextField(
+              onChanged: (value) {
+                sharedPreference.setString("email", value.toString());
+              },
               decoration: InputDecoration(
                   hintText: "username",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14.0)),
@@ -61,6 +70,9 @@ class LoginCard extends StatelessWidget {
                     fontFamily: "Poppins-Medium",
                     fontSize: ScreenUtil.getInstance().setSp(22))),
             TextField(
+              onChanged: (value) {
+                sharedPreference.setString("password", value.toString());
+              },
               obscureText: true,
               decoration: InputDecoration(
                   hintText: "Password",

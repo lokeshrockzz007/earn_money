@@ -71,7 +71,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           IconButton(icon: Icon(Icons.question_answer), onPressed: () {}),
         ],
       ),
-      drawer: SideMenu(),
+      drawer: SideMenu(widget.user, widget.email),
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[

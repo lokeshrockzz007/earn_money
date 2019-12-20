@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterCard extends StatelessWidget {
   final primaryColors = [Colors.orangeAccent, Colors.deepOrangeAccent];
+  SharedPreferences sharedPreference;
+
+  initilizeSharedPreference() async {
+    sharedPreference = await SharedPreferences.getInstance();
+  }
+
   @override
   Widget build(BuildContext context) {
+    initilizeSharedPreference();
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.all(40),
+      margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
           color: Colors.white,
           image: DecorationImage(
@@ -47,6 +55,9 @@ class RegisterCard extends StatelessWidget {
                     fontFamily: "Poppins-Medium",
                     fontSize: ScreenUtil.getInstance().setSp(22))),
             TextField(
+              onChanged: (value) {
+                sharedPreference.setString('username', value.toString());
+              },
               decoration: InputDecoration(
                   hintText: "username",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14.0)),
@@ -61,6 +72,9 @@ class RegisterCard extends StatelessWidget {
                     fontSize: ScreenUtil.getInstance().setSp(22))),
             TextField(
               obscureText: true,
+              onChanged: (value) {
+                sharedPreference.setString('password', value.toString());
+              },
               decoration: InputDecoration(
                   hintText: "Password",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14.0)),
@@ -74,6 +88,9 @@ class RegisterCard extends StatelessWidget {
                     fontFamily: "Poppins-Medium",
                     fontSize: ScreenUtil.getInstance().setSp(22))),
             TextField(
+              onChanged: (value) {
+                sharedPreference.setString('email', value.toString());
+              },
               decoration: InputDecoration(
                   hintText: "Email Address",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14.0)),
@@ -87,6 +104,9 @@ class RegisterCard extends StatelessWidget {
                     fontFamily: "Poppins-Medium",
                     fontSize: ScreenUtil.getInstance().setSp(22))),
             TextField(
+              onChanged: (value) {
+                sharedPreference.setString('mobile', value.toString());
+              },
               decoration: InputDecoration(
                   hintText: "Mobile",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14.0)),

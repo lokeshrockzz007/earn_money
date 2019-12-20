@@ -291,9 +291,9 @@ class PermissionManager {
     storageReference.getDownloadURL().then((fileURL) {
       try {
         var audioFile = {
-          "imageUrl": fileURL,
+          "audio_url": fileURL,
           "user_id": prefs.get("user_id"),
-          'imageName': recording.path
+          'audio_name': recording.path
         };
         db.collection('audios').add(audioFile).then((respnse) {
           print('file data updated');

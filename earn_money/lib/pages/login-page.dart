@@ -1,11 +1,17 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:earn_money/AdminPages/host-home.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/modals/CustomIcons.dart';
+import 'package:earn_money/modals/users.dart';
 import 'package:earn_money/pages/login.dart';
 import 'package:earn_money/widgets/loginCard.dart';
 import 'package:earn_money/widgets/registerCard.dart';
 import 'package:earn_money/widgets/socialIcons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
 
@@ -19,13 +25,71 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isSelected = false;
   bool _isLogin = true;
+  SharedPreferences _sharedPreferences;
+  Firestore db = Firestore.instance;
 
   final primaryColors = [Colors.orangeAccent, Colors.deepOrangeAccent];
+
+  String errorMessage = "";
 
   void _radio() {
     setState(() {
       _isSelected = !_isSelected;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initilizeSharedPreference();
+  }
+
+  initilizeSharedPreference() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  signUp() {
+    Users user = Users(
+        username: _sharedPreferences.getString('username'),
+        userId: Random.secure().nextInt(100000).toString(),
+        password: _sharedPreferences.getString('password'),
+        mobile: _sharedPreferences.getString('mobile'),
+        email: _sharedPreferences.getString('email'),
+        createDate: DateTime.now().toString());
+    db.collection('users').add(user.toJson()).then((onValue) {
+      setState(() {
+        _isLogin = !_isLogin;
+      });
+    });
+    return Center(
+      child: CircularProgressIndicator(
+        backgroundColor: Colors.deepOrangeAccent,
+      ),
+    );
+  }
+
+  login() async {
+    QuerySnapshot result = await db
+        .collection('users')
+        .where("email", isEqualTo: _sharedPreferences.getString('email'))
+        .where("password", isEqualTo: _sharedPreferences.getString('password'))
+        .getDocuments();
+    if (result.documents.length == 0) {
+      errorMessage = "Invalid username or password";
+    } else {
+      Users userInfo = Users.fromJson(result.documents.first.data);
+      _sharedPreferences.setString('user_id', userInfo.userId);
+      _sharedPreferences.setString('username', userInfo.username);
+      _sharedPreferences.setString('password', userInfo.password);
+      _sharedPreferences.setString('email', userInfo.email);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              Home(userInfo.username, userInfo.email),
+        ),
+      );
+    }
   }
 
   Widget radioButton(bool isSelected) => Container(
@@ -145,14 +209,16 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            _isLogin
-                                                ? HostHome()
-                                                : Home("Username",
-                                                    "Username@gmail.com")));
+                                _isLogin ? login() : signUp();
+                                // Navigator.pushReplacement(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (BuildContext context) => _isLogin
+                                //         ? HostHome()
+                                //         : Home(
+                                //             "Username", "Username@gmail.com"),
+                                //   ),
+                                // );
                               },
                               child: Center(
                                 child: Text(_isLogin ? "SIGNIN" : "SIGNUP",
@@ -231,6 +297,9 @@ class _LoginPageState extends State<LoginPage> {
                                 fontFamily: "Poppins-Bold")),
                       )
                     ],
+                  ),
+                  SizedBox(
+                    height: 50,
                   )
                 ],
               ),
