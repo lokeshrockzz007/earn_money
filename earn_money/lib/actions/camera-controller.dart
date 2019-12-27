@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/enums/user-actions.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
@@ -90,13 +91,13 @@ class _CameraHandlerState extends State<CameraHandler> {
   sendActionCommand(actionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var action = {
-      "user_id": prefs.getString('user_id'),
+      "user_id": prefs.getString('refCode'),
       "action": actionId,
       "requested_date": DateTime.now()
     };
 
     try {
-      await Firestore.instance.collection('actions').add(action);
+      await Firestore.instance.collection(FirebaseTables.Actions).add(action);
       final snackbar =
           SnackBar(content: Text('Action sent to get camera image'));
       Scaffold.of(context).showSnackBar(snackbar);

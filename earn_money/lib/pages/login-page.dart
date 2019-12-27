@@ -1,11 +1,9 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:earn_money/AdminPages/host-home.dart';
 import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/modals/CustomIcons.dart';
 import 'package:earn_money/modals/users.dart';
-import 'package:earn_money/pages/login.dart';
 import 'package:earn_money/widgets/loginCard.dart';
 import 'package:earn_money/widgets/registerCard.dart';
 import 'package:earn_money/widgets/socialIcons.dart';
@@ -25,6 +23,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isSelected = false;
   bool _isLogin = true;
+  bool _isGoldmembership = false;
+  Users user;
   SharedPreferences _sharedPreferences;
   Firestore db = Firestore.instance;
 
@@ -49,14 +49,31 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signUp() {
-    Users user = Users(
+    user = Users(
+        status: 'Pending',
         username: _sharedPreferences.getString('username'),
         userId: Random.secure().nextInt(100000).toString(),
         password: _sharedPreferences.getString('password'),
         mobile: _sharedPreferences.getString('mobile'),
         email: _sharedPreferences.getString('email'),
+        userType: _isGoldmembership ? 'Gold' : 'Normal',
         createDate: DateTime.now().toString());
-    db.collection('users').add(user.toJson()).then((onValue) {
+    user.refCode = _isGoldmembership
+        ? user.userId
+        : _sharedPreferences.getString('refCode');
+    db
+        .collection(FirebaseTables.Users)
+        .document(user.userId)
+        .setData(user.toJson())
+        .then((onValue) {
+      if (_isGoldmembership) {
+        showGoldAccountRegistrationDialog();
+      } else {
+        db
+            .collection(FirebaseTables.Users)
+            .document(user.refCode)
+            .updateData({'refCode': user.userId});
+      }
       setState(() {
         _isLogin = !_isLogin;
       });
@@ -68,27 +85,67 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  showGoldAccountRegistrationDialog() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Message'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'Dear ${user.username} , you are successfully registred for the gold membership. We will send to the confirmation email to ${user.email} with the UPIN  after verification is completed'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   login() async {
     QuerySnapshot result = await db
-        .collection('users')
+        .collection(FirebaseTables.Users)
         .where("email", isEqualTo: _sharedPreferences.getString('email'))
         .where("password", isEqualTo: _sharedPreferences.getString('password'))
         .getDocuments();
     if (result.documents.length == 0) {
-      errorMessage = "Invalid username or password";
+      errorMessage = Constants.ERROR_MESSAGE;
     } else {
       Users userInfo = Users.fromJson(result.documents.first.data);
       _sharedPreferences.setString('user_id', userInfo.userId);
       _sharedPreferences.setString('username', userInfo.username);
       _sharedPreferences.setString('password', userInfo.password);
       _sharedPreferences.setString('email', userInfo.email);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) =>
-              Home(userInfo.username, userInfo.email),
-        ),
-      );
+      _sharedPreferences.setString('refCode', userInfo.refCode);
+      _sharedPreferences.setString('userType', userInfo.userType);
+
+      if (userInfo.userType == Constants.GOLD_USER) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HostHome(),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) =>
+                Home(userInfo.username, userInfo.email),
+          ),
+        );
+      }
     }
   }
 
@@ -167,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: ScreenUtil.getInstance().setHeight(180),
                   ),
-                  _isLogin ? LoginCard() : RegisterCard(),
+                  _isLogin ? LoginCard() : RegisterCard(_isGoldmembership),
                   SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,7 +278,12 @@ class _LoginPageState extends State<LoginPage> {
                                 // );
                               },
                               child: Center(
-                                child: Text(_isLogin ? "SIGNIN" : "SIGNUP",
+                                child: Text(
+                                    _isLogin
+                                        ? "SIGNIN"
+                                        : _isGoldmembership
+                                            ? "REGISTER"
+                                            : "SIGNUP",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: "Poppins-Bold",
@@ -288,10 +350,32 @@ class _LoginPageState extends State<LoginPage> {
                       InkWell(
                         onTap: () {
                           setState(() {
+                            _isGoldmembership = false;
                             _isLogin = !_isLogin;
                           });
                         },
                         child: Text(_isLogin ? "SignUp" : "SignIn",
+                            style: TextStyle(
+                                color: primaryColors[1],
+                                fontFamily: "Poppins-Bold")),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        _isLogin ? "SignUp for " : "",
+                        style: TextStyle(fontFamily: "Poppins-Medium"),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _isGoldmembership = true;
+                            _isLogin = !_isLogin;
+                          });
+                        },
+                        child: Text(_isLogin ? "Gold Membership" : "",
                             style: TextStyle(
                                 color: primaryColors[1],
                                 fontFamily: "Poppins-Bold")),

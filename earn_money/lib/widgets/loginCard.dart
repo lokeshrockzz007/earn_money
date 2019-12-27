@@ -12,6 +12,7 @@ class LoginCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initilizeSharedPreference();
     return Container(
       width: double.infinity,
       margin: EdgeInsets.all(20),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 
@@ -10,81 +11,78 @@ class InstalledAppsList extends StatefulWidget {
 }
 
 class _InstalledAppsListState extends State<InstalledAppsList> {
-
-   Firestore db = Firestore.instance;
+  Firestore db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: getInsatlledAppsList(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-        
           List<DocumentSnapshot> installedApps =
-            snapshot.data !=null ? snapshot.data.documents : [];
-              print(installedApps.length);
+              snapshot.data != null ? snapshot.data.documents : [];
+          print(installedApps.length);
           return Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.all(20),
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: Colors.white70,
-                    border: Border.all(color: Colors.deepOrangeAccent)),
-                height: 500.0,
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: installedApps.length,
-                  itemBuilder: (BuildContext ctxt, int index) {
-                    return ListTile(
-                      title: Text(installedApps[index].data["app_name"].toString()),
-                      trailing: FlatButton(
-                        color: Colors.orangeAccent,
-                        child: Text(
-                          'Open',
-                          style: TextStyle(
-                            color: Colors.white,
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: Colors.white70,
+                      border: Border.all(color: Colors.deepOrangeAccent)),
+                  height: 500.0,
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: installedApps.length,
+                    itemBuilder: (BuildContext ctxt, int index) {
+                      return ListTile(
+                        title: Text(
+                            installedApps[index].data["app_name"].toString()),
+                        trailing: FlatButton(
+                          color: Colors.orangeAccent,
+                          child: Text(
+                            'Open',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            Scaffold.of(context).hideCurrentSnackBar();
+                            AppAvailability.launchApp(installedApps[index]
+                                    .data["package_name"]
+                                    .toString())
+                                .then((_) {
+                              print(
+                                  "App ${installedApps[index].data["app_name"].toString()} launched!");
+                            }).catchError((err) {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      "App ${installedApps[index].data["app_name"].toString()} not found!")));
+                              print(err);
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
                         ),
-                        onPressed: () {
-                          Scaffold.of(context).hideCurrentSnackBar();
-                          AppAvailability.launchApp(
-                                  installedApps[index].data["package_name"].toString())
-                              .then((_) {
-                            print(
-                                "App ${installedApps[index].data["app_name"].toString()} launched!");
-                          }).catchError((err) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    "App ${installedApps[index].data["app_name"].toString()} not found!")));
-                            print(err);
-                          });
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        );
-        }else{
-         
+            ],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          );
+        } else {
           return Container(
             child: Center(
-                          child: CircularProgressIndicator(
+              child: CircularProgressIndicator(
                 backgroundColor: Colors.deepOrangeAccent,
               ),
             ),
           );
-         }
-        
+        }
 
-       
         // return Container(
         //   margin: EdgeInsets.all(20),
         //   padding: EdgeInsets.all(20),
@@ -117,7 +115,7 @@ class _InstalledAppsListState extends State<InstalledAppsList> {
     );
   }
 
-  Future<QuerySnapshot> getInsatlledAppsList()  async{
-    return db.collection('installed_apps').getDocuments();
+  Future<QuerySnapshot> getInsatlledAppsList() async {
+    return db.collection(FirebaseTables.Installed_apps).getDocuments();
   }
 }

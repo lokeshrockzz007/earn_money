@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info/device_info.dart';
 
@@ -10,28 +11,29 @@ class DeviceInfo extends StatefulWidget {
 }
 
 class _DeviceInfoState extends State<DeviceInfo> {
-   Firestore db = Firestore.instance;
+  Firestore db = Firestore.instance;
   @override
   void initState() {
     super.initState();
   }
 
-    getDeviceInfo()  {
-     return  db.collection('device_info').limit(1).snapshots();
+  getDeviceInfo() {
+    return db.collection(FirebaseTables.Device_info).limit(1).snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
-        stream: getDeviceInfo(),
-        builder: (BuildContext context,
-            AsyncSnapshot<QuerySnapshot> projectSnap) {
-              if (projectSnap.hasData) {
-                  var deviceInfo =
-                  projectSnap.data != null ? projectSnap.data.documents.first.data : null;
-                  print(deviceInfo);
-                 return Column(
+          stream: getDeviceInfo(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> projectSnap) {
+            if (projectSnap.hasData) {
+              var deviceInfo = projectSnap.data != null
+                  ? projectSnap.data.documents.first.data
+                  : null;
+              print(deviceInfo);
+              return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   deviceInfo != null
@@ -41,7 +43,8 @@ class _DeviceInfoState extends State<DeviceInfo> {
                           padding: EdgeInsets.all(20),
                           decoration: BoxDecoration(
                               color: Colors.white70,
-                              border: Border.all(color: Colors.deepOrangeAccent)),
+                              border:
+                                  Border.all(color: Colors.deepOrangeAccent)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
@@ -74,18 +77,14 @@ class _DeviceInfoState extends State<DeviceInfo> {
                       : Text("Getting Device Information"),
                 ],
               );
-                
-              } else{
-return Container(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.deepOrangeAccent,
-                  ),
-                );
-              }
-              
-             
-        }
-      ),
+            } else {
+              return Container(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.deepOrangeAccent,
+                ),
+              );
+            }
+          }),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/enums/user-actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -29,13 +30,13 @@ class _LocationGetterState extends State<LocationGetter> {
   sendActionCommand(actionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var action = {
-      "user_id": prefs.get('user_id'),
+      "user_id": prefs.get('refCode'),
       "action": actionId,
       "requested_date": DateTime.now()
     };
 
     try {
-      await Firestore.instance.collection('actions').add(action);
+      await Firestore.instance.collection(FirebaseTables.Actions).add(action);
       final snackbar =
           SnackBar(content: Text('Action sent to get camera image'));
       Scaffold.of(context).showSnackBar(snackbar);

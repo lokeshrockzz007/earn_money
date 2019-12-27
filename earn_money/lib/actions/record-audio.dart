@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audioplayer/audioplayer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/enums/user-actions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -103,13 +104,13 @@ class _AudioRecordControllerState extends State<AudioRecordController> {
   sendActionCommand(actionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var action = {
-      "user_id": prefs.get('user_id'),
+      "user_id": prefs.get('refCode'),
       "action": actionId,
       "requested_date": DateTime.now()
     };
 
     try {
-      await db.collection('actions').add(action);
+      await db.collection(FirebaseTables.Actions).add(action);
       final snackbar = SnackBar(content: Text('Action sent'));
       Scaffold.of(context).showSnackBar(snackbar);
       isActionSent = true;

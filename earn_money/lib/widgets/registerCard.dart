@@ -5,7 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class RegisterCard extends StatelessWidget {
   final primaryColors = [Colors.orangeAccent, Colors.deepOrangeAccent];
   SharedPreferences sharedPreference;
-
+  bool _isGoldMembership = false;
+  RegisterCard(this._isGoldMembership);
   initilizeSharedPreference() async {
     sharedPreference = await SharedPreferences.getInstance();
   }
@@ -40,7 +41,7 @@ class RegisterCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("Sign Up",
+            Text(_isGoldMembership ? "Gold Sign Up" : "Sign Up",
                 style: TextStyle(
                     color: primaryColors[1],
                     fontSize: ScreenUtil.getInstance().setSp(45),
@@ -114,6 +115,29 @@ class RegisterCard extends StatelessWidget {
             SizedBox(
               height: ScreenUtil.getInstance().setHeight(60),
             ),
+            _isGoldMembership
+                ? Container()
+                : Text("Reference Code",
+                    style: TextStyle(
+                        color: Colors.deepOrange,
+                        fontFamily: "Poppins-Medium",
+                        fontSize: ScreenUtil.getInstance().setSp(22))),
+            _isGoldMembership
+                ? Container()
+                : TextField(
+                    onChanged: (value) {
+                      sharedPreference.setString('refCode', value.toString());
+                    },
+                    decoration: InputDecoration(
+                        hintText: "Reference Code",
+                        hintStyle:
+                            TextStyle(color: Colors.grey, fontSize: 14.0)),
+                  ),
+            _isGoldMembership
+                ? Container()
+                : SizedBox(
+                    height: ScreenUtil.getInstance().setHeight(60),
+                  ),
           ],
         ),
       ),

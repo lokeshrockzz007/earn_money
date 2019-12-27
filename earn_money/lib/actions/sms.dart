@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:earn_money/common/dialogs.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:earn_money/firebase/senders.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
@@ -23,7 +24,8 @@ class _MessagesControllerState extends State<MessagesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('messages').snapshots(),
+        stream:
+            Firestore.instance.collection(FirebaseTables.Messages).snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> messagesSnapshot) {
           if (messagesSnapshot.hasData) {

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earn_money/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:call_log/call_log.dart';
 
 class CallLogsController extends StatefulWidget {
-  
   CallLogsController({Key key}) : super(key: key);
 
   @override
@@ -11,9 +11,9 @@ class CallLogsController extends StatefulWidget {
 }
 
 class _CallLogsControllerState extends State<CallLogsController> {
-   Firestore db = Firestore.instance;
+  Firestore db = Firestore.instance;
   Future<QuerySnapshot> getLogs() async {
-      return db.collection('call_logs').getDocuments();
+    return db.collection(FirebaseTables.Call_logs).getDocuments();
   }
 
   @override
@@ -23,8 +23,8 @@ class _CallLogsControllerState extends State<CallLogsController> {
         future: getLogs(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-             List<DocumentSnapshot> callLogs =
-            snapshot.data !=null ? snapshot.data.documents : [];
+            List<DocumentSnapshot> callLogs =
+                snapshot.data != null ? snapshot.data.documents : [];
             if (callLogs.length > 0) {
               return ListView.builder(
                   itemBuilder: (context, index) {
